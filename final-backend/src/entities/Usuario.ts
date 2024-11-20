@@ -1,4 +1,3 @@
-
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from "typeorm";
 import { Organo } from "./Organo";
 import * as bcrypt from "bcrypt";
@@ -27,7 +26,7 @@ export class Usuario {
   organos: Organo[];
 
   @BeforeInsert()
-  async hashPassword() {
+  async hashPassword(): Promise<void> {
     this.contraseña = await bcrypt.hash(this.contraseña, 10);
   }
 }
