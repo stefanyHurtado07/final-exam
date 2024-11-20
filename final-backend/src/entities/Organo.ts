@@ -1,31 +1,24 @@
-import { Router } from "express";
-import { getRepository } from "typeorm";
-import { Organo } from "../entities/Organo";
-import { verificarToken, CustomRequest } from "../middleware/auth";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Usuario } from "./Usuario";
 
-const router = Router();
+@Entity()
+export class Organo {
+  @PrimaryGeneratedColumn()
+  id: number = 0;
 
-// Crear un nuevo órgano
-router.post("/crear", verificarToken, async (req: CustomRequest, res, next) => {
-    try {
-        const { tipo, donante, fechaDisponibilidad } = req.body;
-        if (!tipo || !donante || !fechaDisponibilidad) {
-            return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
-        }
+  @Column({ length: 50 })
+  tipo: string = "";
 
-        const nuevoOrgano = getRepository(Organo).create({
-            tipo,
-            donante,
-            fechaDisponibilidad,
-            proveedor: req.user,
-        });
+  @Column({ length: 100 })
+  donante: string = "";
 
-        const resultado = await getRepository(Organo).save(nuevoOrgano);
-        res.status(201).json(resultado);
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-});
+  @Column({ type: "date" })
+  fechaDisponibilidad: Date = new Date();
 
-export default router;
+  @Column({ default: false })
+  verificado: boolean = false;
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.organos, { nullable: false, onDelete: "CASCADE" })
+  proveedor: Usuario = new Usuario();
+}
+
