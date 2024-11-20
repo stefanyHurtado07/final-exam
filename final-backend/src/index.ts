@@ -1,11 +1,9 @@
-
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import dotenv from "dotenv";
 import organoRoutes from "./routes/organos";
 import usuarioRoutes from "./routes/usuarios";
-import { verificarToken } from "./middleware/auth";
 
 dotenv.config(); // Cargar variables de entorno
 
@@ -19,7 +17,7 @@ app.use("/api/organos", organoRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 
 // Manejo de errores
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).send({ error: "Algo salió mal en el servidor. Intenta nuevamente." });
 });
