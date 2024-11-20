@@ -2,28 +2,25 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 
 import { Organo } from "./Organo";
 import * as bcrypt from "bcrypt";
 
-/**
- * Representa un usuario registrado en la plataforma.
- */
 @Entity()
 export class Usuario {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number = 0;
 
   @Column({ length: 50 })
-  nombre: string;
+  nombre: string = "";
 
   @Column({ unique: true })
-  email: string;
+  email: string = "";
 
   @Column()
-  contraseña: string;
+  contraseña: string = "";
 
   @Column({ default: "usuario" })
-  rol: string;
+  rol: string = "usuario";
 
   @OneToMany(() => Organo, (organo) => organo.proveedor)
-  organos: Organo[];
+  organos: Organo[] = [];
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
